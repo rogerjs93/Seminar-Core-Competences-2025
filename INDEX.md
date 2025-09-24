@@ -1,5 +1,10 @@
 # 📚 Seminar Core Competences 2025 - Navigation Index
 
+## 🚀 Auto File Browser
+**[🌐 Launch File Browser](./file-browser.html)** - Real-time repository file listing with GitHub API integration
+
+*The auto file browser provides a dynamic, searchable interface to explore all repository contents automatically. Perfect for handling multiple file uploads and exploring the latest changes.*
+
 ## 🎯 Quick Navigation
 
 ### 📋 Assignments
@@ -20,14 +25,27 @@
 Seminar-Core-Competences-2025/
 ├── INDEX.md                    # This navigation file
 ├── README.md                   # Main repository information
-├── assigment1/                 # Assignment 1 submissions
+├── file-browser.html           # 🚀 Auto file browser (GitHub API)
+├── assigment1/                 # Assignment 1 materials
 │   ├── index.md               # Assignment 1 overview
-│   ├── example_student/       # Example submission structure
-│   └── README.md              # Assignment 1 instructions
-├── assigment2/                 # Assignment 2 submissions
-├── assigment3/                 # Assignment 3 submissions
-├── assigment4/                 # Assignment 4 submissions
-├── assigment5/                 # Assignment 5 submissions
+│   ├── uploads/               # Student submissions & files
+│   └── resources/             # Additional materials
+├── assigment2/                 # Assignment 2 materials
+│   ├── uploads/               # Student submissions & files
+│   └── resources/             # Additional materials
+├── assigment3/                 # Assignment 3 materials
+│   ├── uploads/               # Student submissions & files
+│   └── resources/             # Additional materials
+├── assigment4/                 # Assignment 4 materials
+│   ├── uploads/               # Student submissions & files
+│   └── resources/             # Additional materials
+├── assigment5/                 # Assignment 5 materials
+│   ├── uploads/               # Student submissions & files
+│   └── resources/             # Additional materials
+├── shared-resources/           # Common materials across assignments
+│   ├── templates/             # Document templates
+│   ├── examples/              # Example submissions
+│   └── references/            # Reference materials
 └── docs/                      # Documentation and web resources
     ├── index.md              # Documentation overview
     └── src/                  # Source files for documentation
@@ -37,10 +55,11 @@ Seminar-Core-Competences-2025/
 
 ## 📌 Quick Links
 
+- **[🌐 Auto File Browser](./file-browser.html)** - Dynamic file listing with GitHub API
 - [Repository Main Page](./README.md)
-- [Admin Policy](./README.md#-admin-policy)
 - [Documentation Site](./docs/)
-- [Example Student Submissions](./assigment1/example_student/)
+- [Shared Resources](./shared-resources/)
+- [GitHub Repository](https://github.com/rogerjs93/Seminar-Core-Competences-2025)
 
 ---
 
