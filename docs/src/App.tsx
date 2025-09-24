@@ -5,11 +5,15 @@ import {
   Box,
   Card,
   CardContent,
+  CardActionArea,
   CircularProgress,
   List,
   ListItem,
   ListItemText,
-  Link as MuiLink
+  Link as MuiLink,
+  Button,
+  Chip,
+  Stack
 } from "@mui/material";
 
 const GITHUB_API_BASE = "https://api.github.com";
@@ -24,7 +28,6 @@ type Submission = {
 };
 
 function fetchAssignmentFolders(assignment: string): Promise<Submission[]> {
-  // List folders in the assignment directory
   return fetch(
     `${GITHUB_API_BASE}/repos/${OWNER}/${REPO}/contents/${assignment}`
   )
@@ -55,101 +58,165 @@ function fetchAssignmentFolders(assignment: string): Promise<Submission[]> {
 
 const AssignmentCard: React.FC<{ assignment: string }> = ({ assignment }) => {
   const [subs, setSubs] = useState<Submission[] | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     fetchAssignmentFolders(assignment).then(setSubs);
   }, [assignment]);
 
+  const handleCardClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleViewOnGitHub = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    window.open(`https://github.com/${OWNER}/${REPO}/tree/main/${assignment}`, '_blank');
+  };
+
   return (
-    <Card sx={{ mb: 3 }}>
-      <CardContent>
-        <Typography variant="h5" color="primary">
-          {assignment.replace("assignment", "Assignment ")}
-        </Typography>
-        <Box mt={2}>
-          {subs === null ? (
-            <CircularProgress size={24} />
-          ) : (
-            <List>
-              {subs.length === 0 ? (
-                <ListItem>
-                  <ListItemText primary="No submissions yet." />
-                </ListItem>
+    <Card sx={{ mb: 3, cursor: 'pointer' }}>
+      <CardActionArea onClick={handleCardClick}>
+        <CardContent>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h5" color="primary">
+              📚 {assignment.replace("assignment", "Assignment ")}
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              <Chip 
+                size="small" 
+                label={subs ? `${subs.length} submissions` : 'Loading...'} 
+                color="primary" 
+                variant="outlined"
+              />
+              <Button
+                size="small"
+                onClick={handleViewOnGitHub}
+                variant="outlined"
+              >
+                View on GitHub
+              </Button>
+            </Stack>
+          </Box>
+          
+          {expanded && (
+            <Box mt={2}>
+              {subs === null ? (
+                <Box display="flex" alignItems="center" gap={1}>
+                  <CircularProgress size={20} />
+                  <Typography variant="body2">Loading submissions...</Typography>
+                </Box>
               ) : (
-                subs.map((s) => (
-                  <ListItem key={s.name} alignItems="flex-start">
-                    <ListItemText
-                      primary={
-                        <strong>
-                          <span role="img" aria-label="folder">
-                            📁
-                          </span>{" "}
-                          {s.name}
-                        </strong>
-                      }
-                      secondary={
-                        <>
-                          {s.files.map((f) => (
-                            <span key={f}>
-                              <MuiLink
-                                href={`https://github.com/${OWNER}/${REPO}/blob/main/${assignment}/${s.name}/${f}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                📄 {f}
-                              </MuiLink>{" "}
-                            </span>
-                          ))}
-                          {s.notes && (
-                            <span>
-                              {" | "}
-                              <MuiLink
-                                href={`https://github.com/${OWNER}/${REPO}/blob/main/${assignment}/${s.name}/notes.md`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                📝 notes
-                              </MuiLink>
-                            </span>
-                          )}
-                        </>
-                      }
-                    />
-                  </ListItem>
-                ))
+                <List>
+                  {subs.length === 0 ? (
+                    <ListItem>
+                      <ListItemText 
+                        primary="📝 No submissions yet" 
+                        secondary="Click 'View on GitHub' to explore the assignment folder or submit your work."
+                      />
+                    </ListItem>
+                  ) : (
+                    subs.map((s) => (
+                      <ListItem key={s.name} alignItems="flex-start">
+                        <ListItemText
+                          primary={<strong>📁 {s.name}</strong>}
+                          secondary={
+                            <Box mt={1}>
+                              <Stack direction="row" spacing={1} flexWrap="wrap">
+                                {s.files.map((f) => (
+                                  <MuiLink
+                                    key={f}
+                                    href={`https://github.com/${OWNER}/${REPO}/blob/main/${assignment}/${s.name}/${f}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    sx={{ display: 'inline-block', mr: 1, mb: 0.5 }}
+                                  >
+                                    📄 {f}
+                                  </MuiLink>
+                                ))}
+                                {s.notes && (
+                                  <MuiLink
+                                    href={`https://github.com/${OWNER}/${REPO}/blob/main/${assignment}/${s.name}/notes.md`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    sx={{ display: 'inline-block', mr: 1, mb: 0.5, fontWeight: 'bold' }}
+                                  >
+                                    📝 Notes
+                                  </MuiLink>
+                                )}
+                              </Stack>
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                    ))
+                  )}
+                </List>
               )}
-            </List>
+            </Box>
           )}
-        </Box>
-      </CardContent>
+          
+          {!expanded && (
+            <Typography variant="body2" color="text.secondary" mt={1}>
+              Click to expand and view submissions, or use "View on GitHub" to browse the folder directly.
+            </Typography>
+          )}
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };
 
 function App() {
   return (
-    <Container maxWidth="md" sx={{ mt: 5 }}>
-      <Typography variant="h3" gutterBottom>
-        Seminar Core Competences 2025
-      </Typography>
-      <Typography variant="h6" color="text.secondary" paragraph>
-        Anonymous &amp; optional student assignment portal.
-      </Typography>
-      <Box mb={4}>
-        <Typography variant="body1">
-          <strong>How to submit:</strong> Create a folder for yourself using any pseudonym in any assignment directory, upload your work, and optionally add a notes.md for feedback! See repo <MuiLink href="https://github.com/rogerjs93/Seminar-Core-Competences-2025" target="_blank">README</MuiLink> for full rules.
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box textAlign="center" mb={4}>
+        <Typography variant="h3" component="h1" gutterBottom color="primary">
+          🎓 Seminar Core Competences 2025
+        </Typography>
+        <Typography variant="h6" color="text.secondary" gutterBottom>
+          Assignment Repository & Documentation Portal
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Click on assignment cards to view submissions, or use the GitHub button to browse folders directly.
         </Typography>
       </Box>
-      {ASSIGNMENTS.map((a) => (
-        <AssignmentCard assignment={a} key={a} />
-      ))}
-      <Box mt={6} mb={2} textAlign="center">
-        <Typography variant="caption" color="text.secondary">
-          Powered by GitHub Pages &middot; UI updates automatically as assignments are added!
+
+      <Box>
+        {ASSIGNMENTS.map((assignment) => (
+          <AssignmentCard key={assignment} assignment={assignment} />
+        ))}
+      </Box>
+
+      <Box textAlign="center" mt={4} p={3} bgcolor="background.paper" border="1px solid" borderColor="divider" borderRadius={2}>
+        <Typography variant="h6" gutterBottom>
+          📋 Quick Actions
         </Typography>
+        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
+          <Button
+            variant="outlined"
+            href={`https://github.com/${OWNER}/${REPO}`}
+            target="_blank"
+          >
+            📂 Main Repository
+          </Button>
+          <Button
+            variant="outlined"
+            href={`https://github.com/${OWNER}/${REPO}/tree/main/shared-resources`}
+            target="_blank"
+          >
+            📚 Shared Resources
+          </Button>
+          <Button
+            variant="outlined"
+            href={`https://github.com/${OWNER}/${REPO}/blob/main/README.md`}
+            target="_blank"
+          >
+            📖 Documentation
+          </Button>
+        </Stack>
       </Box>
     </Container>
   );
 }
 
-export default App;
+export default App
