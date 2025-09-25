@@ -19,7 +19,7 @@ import {
 const GITHUB_API_BASE = "https://api.github.com";
 const OWNER = "rogerjs93";
 const REPO = "Seminar-Core-Competences-2025";
-const ASSIGNMENTS = ["assignment1", "assignment2", "assignment3", "assignment4", "assignment5"];
+const ASSIGNMENTS = ["assigment1", "assigment2", "assigment3", "assigment4", "assigment5"];
 
 type Submission = {
   name: string;
@@ -79,7 +79,7 @@ const AssignmentCard: React.FC<{ assignment: string }> = ({ assignment }) => {
         <CardContent>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h5" color="primary">
-              📚 {assignment.replace("assignment", "Assignment ")}
+              📚 {assignment.replace("assigment", "Assignment ")}
             </Typography>
             <Stack direction="row" spacing={1}>
               <Chip 
